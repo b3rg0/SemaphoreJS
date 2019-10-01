@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Asignacion 1</title>    
+  <script src="async.js"></script>
+  <script src="cytoscape.min.js"></script>
+  <script src="semaforo.js"></script>
+  <script src="parametros.json"></script>
+</head>
+<style>
+    #cy {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 30px;
+        left: 0px;
+    }
+</style>
+<body>  
+<div id="cy"></div>
+ <button onclick="iniciar()" id="boton" disabled=true>Iniciar</button>  
+ <button onclick="reiniciar()" id="boton2" disabled=true>Reiniciar</button>  
+  <script>      
+      
+      var cy = cytoscape({
+        container: document.getElementById('cy'),
+        style: [
+          {
+              selector: 'node',
+              style: {
+                  'background-color': 'yellow',
+                  label: 'data(id)'
+              }
+          },
+          {
+              selector: 'edge',
+              style: {
+                  'curve-style': 'bezier',
+                  'target-arrow-shape': 'triangle'
+              }
+          },
+          {
+              selector: '.verde',
+              style: {
+                  'background-color': 'green',                      
+              }
+          },
+          {
+              selector: '.ama',
+              style: {
+                  'background-color': 'yellow',                      
+              }
+          },
+          {
+              selector: '.rojo',
+              style: {
+                  'background-color': 'red',                      
+              }
+         }
+         ]
+      });    
+
+      var arrsema=[]; 
+      
+      Procesos.forEach(function(p){
+        arrsema.push(new Semaphore(p.id,p.tiempo,p.Predecesores));
+        if(p.Predecesores.length==0){
+          document.getElementById("boton").disabled=false;
+        }
+      });
+
+      if(document.getElementById("boton").disabled){
+        alert("Por favor revisar el JSON\nDebe existir al menos 1 proceso sin prerequisitos");
+      }
+
+      var arrf=[];
+      var mayor=0;
+      var elegido="";
+      for(var i=0; i<arrsema.length; i++){  
+        const e= arrsema[i].espera();
+        const s= arrsema[i].saludo();
+        const d= arrsema[i].despido();
+        const t= e+arrsema[i].tiempo();              
+        const id =arrsema[i].id;        
+        const x=(i*50)+200,  y=170+(i*5);
+        if(t>mayor){
+          mayor=t;
+          elegido=id;
+        }
+
+        cy.add({
+            data: { id: id },
+                position: { x: x, y: y }
+            }
+        );
+        const nodo = cy.getElementById(id);
+        arrf.push(
+          function(){     
+            setTimeout(function(){
+              console.log(s);
+              nodo.classes("verde");
+            },e);
+            setTimeout(function(){
+              console.log(d);            
+              nodo.classes("rojo");
+              reactivar(id);
+            },t);
+          }
+        );
+      }
+
+
+      //debe hacerse otro for porque en el 1ero se agregan todos los nodos y aca los vertices
+      for(var i=0; i<arrsema.length; i++){
+        const id =arrsema[i].id;
+        const pre = arrsema[i].predecesores();        
+        for(var j=0; j<pre.length; j++){
+          const source = pre[j];                
+          cy.add({
+              data: {
+                  id: source+" "+id,
+                  source: source,
+                  target: id
+              }
+          });
+        }
+      }
+      
+
+      function iniciar(){
+        document.getElementById("boton").disabled=true;
+        async.parallel(arrf);
+      }
+
+      function reiniciar(){
+        document.getElementById("boton2").disabled=true;  
+        document.getElementById("boton").disabled=false;
+        for(var i=0; i<arrsema.length; i++){
+          cy.getElementById(arrsema[i].id).classes("yellow");
+        }
+      }
+
+      function bloquear(){
+        document.getElementById("boton2").disabled=true;  
+        document.getElementById("boton").disabled=true;
+      }
+
+      function reactivar(e){
+        if(e==elegido){
+          document.getElementById("boton2").disabled=false;  
+        }
+      }
+
+      
+  </script>
+</body>
+
+</html>

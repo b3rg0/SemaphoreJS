@@ -1,0 +1,73 @@
+var Procesos =[
+	{
+		"id":"1",
+		"tiempo": 3000,
+		"Predecesores": []
+
+	},
+	{
+		"id":"dos",
+		"tiempo": 4000,
+		"Predecesores": ["1"]
+	},
+	{
+		"id":"3",
+		"tiempo": 6000,
+		"Predecesores": ["1"]
+	},
+	{
+		"id":"4",
+		"tiempo": 5000,
+		"Predecesores": ["1"]
+	},
+	{
+		"id":"5",
+		"tiempo": 2000,
+		"Predecesores": [6,"dos"]
+	},
+	{
+		"id":6,
+		"tiempo": 3000,
+		"Predecesores": ["4"]
+	},
+	{
+		"id":"7",
+		"tiempo": 5,
+		"Predecesores": ["5",6]
+	},
+	{
+		"id":"8",
+		"tiempo": 4,
+		"Predecesores": ["5"]
+	},
+	{
+		"id":"9",
+		"tiempo": 3,
+		"Predecesores": ["8","7"]
+	},
+	{
+		"id":"beta",
+		"tiempo": 3,
+		"Predecesores": []
+	},
+	{
+		"id":"epsilon",
+		"tiempo": 3,
+		"Predecesores": ["beta"]
+	},
+	{
+		"id":"rho",
+		"tiempo": 3,
+		"Predecesores": ["epsilon"]
+	},
+	{
+		"id":"gamma",
+		"tiempo": 3,
+		"Predecesores": ["rho"]
+	},
+	{
+		"id":"omega",
+		"tiempo": 3,
+		"Predecesores": ["gamma"]
+	}
+];
