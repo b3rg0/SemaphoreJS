@@ -1,0 +1,2 @@
+# SemaphoreJS
+1era asignacion de la Materia Programacion Concurrente donde dado un grafo dirigido como el de la imagen de muestra (ejemplo.jpg)  se ejecutaran los procesos correspondientes cuando sus predecesores asi lo permitan Detalle importante al graficarse el grafo se deben mover los vertices a su gusto, preferiblemente antes de darle a iniciar, si se mueven luego de darle a iniciar no afectara en nada su funcionamiento
